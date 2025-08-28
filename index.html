@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="hi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>संपूर्ण क्रांति - वस्तुनिष्ठ प्रश्नोत्तरी</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .ad-container {
+            margin: 15px 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 700px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        h1, h2 {
+            color: #1a73e8;
+            text-align: center;
+            border-bottom: 2px solid #1a73e8;
+            padding-bottom: 10px;
+            margin-top: 0;
+        }
+        
+        #question-area {
+            min-height: 150px;
+            margin-bottom: 20px;
+        }
+
+        #question-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            padding: 12px 15px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, border-color 0.3s;
+        }
+
+        .options label:hover {
+            background-color: #e8f0fe;
+        }
+        
+        .options input[type="radio"]:checked + span {
+            font-weight: bold;
+            color: #1a73e8;
+        }
+        
+        .options label.selected {
+             background-color: #e8f0fe;
+             border-color: #1a73e8;
+        }
+
+        .options input[type="radio"] {
+            margin-right: 12px;
+        }
+        
+        #navigation-area {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 20px;
+        }
+
+        .nav-btn {
+            padding: 12px 25px;
+            font-size: 1em;
+            font-weight: bold;
+            color: #fff;
+            background-color: #1a73e8;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .nav-btn:hover {
+            background-color: #155ab3;
+            transform: translateY(-2px);
+        }
+        
+        .nav-btn#prev-btn {
+            background-color: #6c757d;
+        }
+        .nav-btn#prev-btn:hover {
+            background-color: #5a6268;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        #welcome-container, #results-container {
+            text-align: center;
+        }
+
+        #quiz-container, #results-container {
+            display: none;
+        }
+
+        input[type="text"] {
+            width: 80%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            font-size: 1em;
+        }
+
+        #progress-indicator {
+            font-weight: bold;
+            color: #555;
+        }
+
+        #score-breakdown {
+            text-align: center;
+            margin: 25px 0;
+            font-size: 1.3em;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        .correct-summary {
+            color: #4caf50;
+            font-weight: 600;
+        }
+        .incorrect-summary {
+            color: #f44336;
+            font-weight: 600;
+        }
+        .unanswered-summary {
+            color: #6c757d;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    
+    <!-- ====== Top Ad Slot ====== -->
+    <div class="ad-container">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '4b505c9273cf9161c278efee028f35e2',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/4b505c9273cf9161c278efee028f35e2/invoke.js"></script>
+    </div>
+
+    <!-- ====== Main Quiz Container ====== -->
+    <div class="container">
+        <!-- Welcome Screen -->
+        <div id="welcome-container">
+            <h1>संपूर्ण क्रांति - वस्तुनिष्ठ प्रश्नोत्तरी</h1>
+            <p>टेस्ट शुरू करने से पहले कृपया अपना नाम दर्ज करें।</p>
+            <input type="text" id="userName" placeholder="अपना नाम यहाँ लिखें">
+            <button class="nav-btn" id="start-btn" style="width: 100%;">क्विज़ शुरू करें</button>
+        </div>
+
+        <!-- Quiz Screen -->
+        <div id="quiz-container">
+            <h2>कक्षा 12 | हिंदी पाठ - 3 "संपूर्ण क्रांति"</h2>
+            <div id="question-area">
+                <!-- Current Question will be loaded here -->
+            </div>
+
+            <div id="navigation-area">
+                <button class="nav-btn" id="prev-btn">पिछला</button>
+                <span id="progress-indicator"></span>
+                <button class="nav-btn" id="next-btn">अगला</button>
+            </div>
+        </div>
+
+        <!-- Results Screen -->
+        <div id="results-container">
+            <h2 id="result-heading">आपका परिणाम</h2>
+            <p id="score-text" style="font-size: 1.5em; font-weight: bold; text-align: center;"></p>
+            <div id="score-breakdown"></div>
+            <button class="nav-btn" id="retry-btn" style="margin-top:20px; width: 100%;">फिर से प्रयास करें</button>
+        </div>
+    </div>
+    
+    <!-- ====== Bottom Ad Slot ====== -->
+    <div class="ad-container">
+        <script type="text/javascript">
+            atOptions = {
+                'key' : '4b505c9273cf9161c278efee028f35e2',
+                'format' : 'iframe',
+                'height' : 50,
+                'width' : 320,
+                'params' : {}
+            };
+        </script>
+        <script type="text/javascript" src="//www.highperformanceformat.com/4b505c9273cf9161c278efee028f35e2/invoke.js"></script>
+    </div>
+
+    <script>
+        const quizData = [
+            { question: "किसने कहा था 'अभी न जाने कितने मीलों इस देश की जनता को जाना है'?", options: ["महात्मा गाँधी", "डॉ. राजेंद्र प्रसाद", "जवाहरलाल नेहरू", "लाल बहादुर शास्त्री"], answer: "C" },
+            { question: "किस अस्पताल में दिनकर जी का निधन हुआ था?", options: ["अपोलो अस्पताल", "श्रीराम नर्सिंग होम", "पी.एम.सी.एच., पटना", "विलिंगडन नर्सिंग होम"], answer: "D" },
+            { question: "जयप्रकाश नारायण को किसका 'दलाल' कहा गया?", options: ["रूस", "ब्रिटेन", "जापान", "अमेरिका"], answer: "D" },
+            { question: "जयप्रकाश नारायण के स्वास्थ्य पर निगरानी रखने वाले डॉक्टर का नाम क्या था?", options: ["डॉ. रहमान", "डॉ. इरफान", "डॉ. मकबूल", "डॉ. एजाज"], answer: "A" },
+            { question: "जयप्रकाश जी को किसका भाषण सुनकर अमेरिका जाने की प्रेरणा मिली?", options: ["स्वामी रामतीर्थ", "स्वामी सत्यदेव", "स्वामी विवेकानंद", "स्वामी सहजानंद"], answer: "B" },
+            { question: "'फ्री प्रेस' के मालिक कौन थे?", options: ["आत्मानंद जी", "शिवानंद गोस्वामी", "सदानंद जी", "शारदानंद गुप्त"], answer: "C" },
+            { question: "'ब्रेन ऑफ बॉम्बे' किसे कहा जाता था?", options: ["उमाशंकर दीक्षित को", "शीला दीक्षित को", "सुरेंद्र दीक्षित को", "हृदयनारायण दीक्षित को"], answer: "A" },
+            { question: "जयप्रकाश नारायण ने आई.एस.सी. की परीक्षा कहाँ से पास की?", options: ["पटना कॉलेज", "पटना साइंस कॉलेज", "हिंदू विश्वविद्यालय", "बिहार विद्यापीठ"], answer: "D" },
+            { question: "लेनिन की मृत्यु कब हुई थी?", options: ["1925 में", "1932 में", "1938 में", "1924 में"], answer: "D" },
+            { question: "जयप्रकाश जी मार्क्सवादी कब बने?", options: ["1928 में", "1927 में", "1938 में", "1924 में"], answer: "D" },
+            { question: "फणीश्वरनाथ रेणु की पुस्तक कौन-सी है?", options: ["सत्यकाम", "कुरुक्षेत्र", "उस जनपद का कवि हूँ", "मैला आँचल"], answer: "D" },
+            { question: "1974 में बिहार प्रदेश के मुख्यमंत्री कौन थे?", options: ["कृष्ण वल्लभ सहाय", "अब्दुल गफूर", "अनुग्रह नारायण सिंह", "महामाया प्रसाद"], answer: "B" },
+            { question: "किसे 'लोकनायक' के नाम से जाना जाता है?", options: ["महात्मा गाँधी को", "जयप्रकाश नारायण को", "महाकवि जायसी को", "बाल गंगाधर तिलक को"], answer: "B" },
+            { question: "जयप्रकाश नारायण का जन्म कब हुआ था?", options: ["11 अक्टूबर, 1902", "8 अक्टूबर, 1904", "8 सितंबर, 1903", "18 अक्टूबर, 1902"], answer: "A" },
+            { question: "जयप्रकाश नारायण की पत्नी का क्या नाम था?", options: ["लीलावती देवी", "अमरावती प्रभा", "प्रभावती देवी", "प्रभा सिन्हा"], answer: "C" },
+            { question: "'रिकंस्ट्रक्शन ऑफ इंडियन पॉलिटी' किसकी रचना है?", options: ["जवाहरलाल नेहरू", "राममनोहर लोहिया", "मदन मोहन मालवीय", "जयप्रकाश नारायण"], answer: "D" },
+            { question: "प्रजा सोशलिस्ट पार्टी का गठन कब हुआ?", options: ["1952 में", "1949 में", "1947 में", "1962 में"], answer: "A" },
+            { question: "जयप्रकाश नारायण को 'भारत रत्न' की उपाधि कब दी गई?", options: ["1990 में", "1998 में", "1978 में", "1974 में"], answer: "B" },
+            { question: "'उर्वशी' किसकी रचना है?", options: ["रामधारी सिंह दिनकर", "मोहनलाल महतो 'वियोगी'", "सुमित्रानंदन पंत", "जयशंकर प्रसाद"], answer: "A" },
+            { question: "'माटी की मूरतें' रचना किसकी है?", options: ["रामधारी सिंह दिनकर", "रामवृक्ष बेनीपुरी", "गजानन माधव मुक्तिबोध", "आरसी प्रसाद सिंह"], answer: "B" },
+            { question: "दिनकर जी किसलिए प्रसिद्ध हैं?", options: ["साहित्यिक रचना के लिए", "संगीत के लिए", "मूर्ति निर्माण के लिए", "उपन्यास लेखन के लिए"], answer: "A" },
+            { question: "जयप्रकाश नारायण को भारत की जनता किस नाम से याद करती है?", options: ["समाजनायक", "देशनायक", "लोकनायक", "जननायक"], answer: "C" },
+            { question: "जयप्रकाश नारायण ने 'संपूर्ण क्रांति' वाला ऐतिहासिक भाषण कहाँ और कब दिया था?", options: ["इलाहाबाद में, 5 जून 1977 को", "रांची में, 5 जून 1975 को", "जमशेदपुर में, 5 जून 1973 को", "पटना में, 5 जून 1974 को"], answer: "D" },
+            { question: "जयप्रकाश नारायण के बचपन का क्या नाम था?", options: ["बिट्टू", "किट्टू", "बाउल", "मोनू"], answer: "C" },
+            { question: "जयप्रकाश नारायण ने किस साल छात्र आंदोलन का नेतृत्व किया था?", options: ["1973 ई. में", "1976 ई. में", "1974 ई. में", "1977 ई. में"], answer: "C" },
+            { question: "जयप्रकाश नारायण के पिताजी का क्या नाम था?", options: ["जगतदयाल", "हरसूदयाल", "प्रेमदयाल", "दीनदयाल"], answer: "B" },
+            { question: "'संपूर्ण क्रांति' क्या है?", options: ["निबंध", "भाषण", "कहानी", "इनमें से कोई नहीं"], answer: "B" },
+            { question: "'संपूर्ण क्रांति' किसकी देन है?", options: ["राम मनोहर लोहिया", "डॉ. अंबेडकर", "कर्पूरी ठाकुर", "जयप्रकाश नारायण"], answer: "D" },
+            { question: "'संपूर्ण क्रांति' पाठ में दिया गया भाषण किसका है?", options: ["जयप्रकाश नारायण का", "रामधारी सिंह दिनकर का", "भगत सिंह का", "इनमें से किसी का नहीं"], answer: "A" },
+            { question: "जयप्रकाश नारायण का जन्म कहाँ हुआ था?", options: ["राघोपुर दियारा", "सिताब दियारा", "बलिया", "छपरा"], answer: "B" },
+            { question: "1974 में छात्र आंदोलन का नेतृत्व किसने किया?", options: ["जॉर्ज फर्नांडिस", "देवी लाल", "कर्पूरी ठाकुर", "जयप्रकाश नारायण"], answer: "D" },
+            { question: "जयप्रकाश नारायण मद्रास में अपने किस मित्र के साथ रुके थे?", options: ["गंगा बाबू", "दिनकर जी", "ईश्वर अय्यर", "भगवान अय्यर"], answer: "C" },
+            { question: "जयप्रकाश नारायण के अनुसार, देश का भविष्य किसके हाथों में है?", options: ["नेताओं के", "नई पीढ़ी के", "पुरानी पीढ़ी के", "पूँजीपतियों के"], answer: "B" },
+            { question: "दिनकर जी को किसके घर पर दिल का दौरा पड़ा था?", options: ["रामनाथ जी गोयनका के", "गंगा बाबू के", "जयप्रकाश नारायण के", "ईश्वर अय्यर के"], answer: "A" },
+            { question: "संपूर्ण क्रांति का नारा किसने दिया था?", options: ["दिनकर", "जयप्रकाश नारायण", "मोरारजी देसाई", "इंदिरा गाँधी"], answer: "B" },
+            { question: "जयप्रकाश नारायण ने बिहार विद्यापीठ में कौन-सी परीक्षा दी?", options: ["मैट्रिक की", "आई.एस.सी. की", "बी.ए. की", "इनमें से कोई नहीं"], answer: "B" },
+            { question: "पुलिस के बड़े उच्चाधिकारी ने किसके मुँह से सुना था कि 'जयप्रकाश नारायण नहीं होते, तो बिहार जल गया होता'?", options: ["दिनकर जी के", "बेनीपुरी जी के", "गोयनका जी के", "दीक्षित जी के"], answer: "D" },
+            { question: "जयप्रकाश नारायण किस मित्रता को ठोस मानते थे?", options: ["पुराने जमाने की", "नये जमाने की", "अंडरग्राउंड जमाने की", "इनमें से कोई नहीं"], answer: "C" },
+            { question: "जयप्रकाश नारायण किसको 'भाई' कहते थे?", options: ["दिनकर जी को", "जवाहरलाल जी को", "रामनाथ गोयनका को", "गंगा बाबू को"], answer: "B" },
+            { question: "जयप्रकाश नारायण का निधन कब हुआ था?", options: ["7 अक्टूबर, 1978", "8 अक्टूबर, 1979", "9 अक्टूबर, 1980", "10 अक्टूबर, 1981"], answer: "B" },
+            { question: "जयप्रकाश नारायण की माता का क्या नाम था?", options: ["रूपरानी", "ज्ञानरानी", "फूलरानी", "प्रेमवती"], answer: "C" },
+            { question: "जयप्रकाश जी ने उच्च शिक्षा प्राप्त करने के लिए कहाँ गए?", options: ["रूस", "जापान", "चीन", "अमेरिका"], answer: "D" },
+            { question: "जयप्रकाश जी ने असहयोग आंदोलन के दौरान किस शिक्षण संस्थान को छोड़ दिया?", options: ["पटना कॉलेज", "मद्रास क्रिश्चियन कॉलेज", "सेंट जेवियर्स कॉलेज", "इनमें से कोई नहीं"], answer: "A" },
+            { question: "दल-विहीन लोकतंत्र किसके मूल उद्देश्यों में है?", options: ["साम्यवाद", "मार्क्सवाद तथा लेनिनवाद", "समाजवाद", "अधिनायकवाद"], answer: "B" },
+            { question: "भाषण के प्रारंभ में जयप्रकाश नारायण ने किनकी कविता सुनाई?", options: ["रामधारी सिंह दिनकर", "रामवृक्ष बेनीपुरी", "फणीश्वरनाथ रेणु", "गोपाल सिंह नेपाली"], answer: "A" },
+            { question: "जयप्रकाश नारायण और जवाहरलाल नेहरू के बीच मतभेद किस बात को लेकर था?", options: ["सत्ता", "परराष्ट्र नीति", "आर्थिक नीति", "धार्मिक नीति"], answer: "B" },
+            { question: "जयप्रकाश नारायण के अनुसार भ्रष्टाचार की जड़ क्या है?", options: ["चुनावी प्रणाली", "सरकार की गलत नीतियाँ", "नेताओं का स्वार्थ", "जनता का अशिक्षित होना"], answer: "B" },
+            { question: "छात्र-संघर्ष समिति ने जयप्रकाश नारायण से क्या आग्रह किया?", options: ["भाषण देने का", "आंदोलन का नेतृत्व करने का", "चुनाव लड़ने का", "पार्टी बनाने का"], answer: "B" },
+            { question: "जयप्रकाश नारायण के भाषण का अंश किस पाठ्य-पुस्तक में संकलित है?", options: ["दिगंत भाग-1", "दिगंत भाग-2", "पद्य-खंड", "गद्य-खंड"], answer: "B" },
+            { question: "प्रभावती देवी किनकी पुत्री थीं?", options: ["ब्रजकिशोर प्रसाद", "राजेंद्र प्रसाद", "रामवृक्ष बेनीपुरी", "इनमें से कोई नहीं"], answer: "A" }
+        ];
+
+        // --- DOM Element References ---
+        const welcomeContainer = document.getElementById('welcome-container');
+        const quizContainer = document.getElementById('quiz-container');
+        const resultsContainer = document.getElementById('results-container');
+        
+        const startBtn = document.getElementById('start-btn');
+        const prevBtn = document.getElementById('prev-btn');
+        const nextBtn = document.getElementById('next-btn');
+        const retryBtn = document.getElementById('retry-btn');
+
+        const questionArea = document.getElementById('question-area');
+        const scoreText = document.getElementById('score-text');
+        const scoreBreakdown = document.getElementById('score-breakdown');
+        const userNameInput = document.getElementById('userName');
+        const resultHeading = document.getElementById('result-heading');
+        const progressIndicator = document.getElementById('progress-indicator');
+        
+        // --- State Variables ---
+        let currentQuestionIndex = 0;
+        let userAnswers = [];
+        let currentUserName = '';
+
+        // --- Functions ---
+        function showQuestion(index) {
+            const questionData = quizData[index];
+            let questionHTML = `<div id="question-text">${index + 1}. ${questionData.question}</div>
+                                <div class="options">`;
+            
+            questionData.options.forEach((option, i) => {
+                const optionLetter = String.fromCharCode(65 + i);
+                const isChecked = userAnswers[index] === optionLetter ? 'checked' : '';
+                questionHTML += `<label>
+                    <input type="radio" name="q${index}" value="${optionLetter}" ${isChecked}>
+                    <span>(${optionLetter}) ${option}</span>
+                </label>`;
+            });
+            
+            questionHTML += `</div>`;
+            questionArea.innerHTML = questionHTML;
+
+            progressIndicator.innerText = `प्रश्न ${index + 1} / ${quizData.length}`;
+            prevBtn.classList.toggle('hidden', index === 0);
+            nextBtn.innerText = (index === quizData.length - 1) ? 'क्विज़ सबमिट करें' : 'अगला';
+            
+            document.querySelectorAll(`input[name="q${index}"]`).forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    document.querySelectorAll(`#question-area .options label`).forEach(label => label.classList.remove('selected'));
+                    e.target.parentElement.classList.add('selected');
+                });
+            });
+
+            if (userAnswers[index]) {
+                const selectedRadio = document.querySelector(`input[name="q${index}"][value="${userAnswers[index]}"]`);
+                if (selectedRadio) selectedRadio.parentElement.classList.add('selected');
+            }
+        }
+        
+        function saveAnswer() {
+            const selectedOption = document.querySelector(`input[name="q${currentQuestionIndex}"]:checked`);
+            if (selectedOption) userAnswers[currentQuestionIndex] = selectedOption.value;
+        }
+
+        function startQuiz() {
+            currentUserName = userNameInput.value.trim();
+            if (currentUserName === "") {
+                alert("कृपया अपना नाम दर्ज करें!");
+                return;
+            }
+            
+            currentQuestionIndex = 0;
+            userAnswers = new Array(quizData.length).fill(null);
+            
+            welcomeContainer.style.display = 'none';
+            resultsContainer.style.display = 'none';
+            quizContainer.style.display = 'block';
+            
+            showQuestion(currentQuestionIndex);
+        }
+
+        function showResults() {
+            let score = 0;
+            let unansweredCount = 0;
+
+            quizData.forEach((item, index) => {
+                if (userAnswers[index] === null) {
+                    unansweredCount++;
+                } else if (userAnswers[index] === item.answer) {
+                    score++;
+                }
+            });
+
+            const incorrectCount = quizData.length - score - unansweredCount;
+
+            resultHeading.innerText = `बहुत बढ़िया, ${currentUserName}!`;
+            scoreText.innerText = `आपका कुल स्कोर: ${quizData.length} में से ${score}`;
+            
+            scoreBreakdown.innerHTML = `
+                <span class="correct-summary">✓ सही: <strong>${score}</strong></span>
+                <span class="incorrect-summary">✗ गलत: <strong>${incorrectCount}</strong></span>
+                <span class="unanswered-summary">? छोड़े गए: <strong>${unansweredCount}</strong></span>
+            `;
+
+            quizContainer.style.display = 'none';
+            resultsContainer.style.display = 'block';
+        }
+
+        // --- Event Listeners ---
+        startBtn.addEventListener('click', startQuiz);
+
+        nextBtn.addEventListener('click', () => {
+            saveAnswer();
+            if (currentQuestionIndex < quizData.length - 1) {
+                currentQuestionIndex++;
+                showQuestion(currentQuestionIndex);
+            } else {
+                showResults();
+            }
+        });
+
+        prevBtn.addEventListener('click', () => {
+            saveAnswer();
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                showQuestion(currentQuestionIndex);
+            }
+        });
+
+        retryBtn.addEventListener('click', () => {
+            resultsContainer.style.display = 'none';
+            welcomeContainer.style.display = 'block';
+            userNameInput.value = '';
+        });
+
+    </script>
+</body>
+</html>
